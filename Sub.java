@@ -15,5 +15,10 @@ public class Sub {
     }
     public void toHexRay(String[][] x){
         //   takes an input matrix and turns it into a hexagon graph
+        for(int i =0; i<10; i++){
+            for(int j =0; j<10; j++){
+                x[i][j] = "lmfao";
+            }
+        }
     }
 }
