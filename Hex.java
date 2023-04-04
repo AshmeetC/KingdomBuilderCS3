@@ -1,11 +1,11 @@
 import java.util.*;
 public class Hex {
-    int terrain; //each terrain is assigned a number and that stays constant for the entire project
-    int player; // 1 2 3 4 and 0 for none
-    ArrayList<Hex> bordering;
+    private String terrain; //each terrain is assigned a number and that stays constant for the entire project
+    private int player; // 1 2 3 4 and 0 for none
+    private ArrayList<Hex> bordering;
     // 0 1 2 3 4 5
     // NE E SE SW W NW
-    public Hex(int t){
+    public Hex(String t){
         bordering = new ArrayList<Hex>();
         player = 0;
         terrain = t;
@@ -19,7 +19,10 @@ public class Hex {
     public int getColor(){
         return player;
     }
-    public int getTerrain(){
+    public String getTerrain(){
         return terrain;
+    }
+    public void set(int a, Hex b){
+        bordering.set(a, b);
     }
 }

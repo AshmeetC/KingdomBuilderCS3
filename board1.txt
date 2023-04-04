@@ -15,5 +15,5 @@ d desert
 m mountain
 f flower
 w water
-s special
+s1/s2/s3/s4 special
 t forest
