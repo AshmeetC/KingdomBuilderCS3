@@ -8,5 +8,13 @@ public class Board {
         TL = b;
         BR = c;
         BL = d;
+        connect();
+    }
+    public void connect(){
+        Hex[][] trRay = TR.getHexRay();
+        Hex[][] tlRay = TL.getHexRay();
+        Hex[][] brRay = BR.getHexRay();
+        Hex[][] blRay = BL.getHexRay();
+        //connect tl to the other boards it borders
     }
 }

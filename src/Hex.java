@@ -43,7 +43,7 @@ public class Hex {
     public String toString(Hex x){
         if(x==null) return "";
         if(x.getBordering().get(4)!=null)
-        return x.getTerrain() + " " + toString(x.getBordering().get(1));
+            return x.getTerrain() + " " + toString(x.getBordering().get(1));
         if(x.getBordering().get(3)==null){
             return terrain + " " + toString(x.getBordering().get(1)) + "\n" + toString(x.getBordering().get(2));
         }

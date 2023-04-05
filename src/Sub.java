@@ -9,7 +9,7 @@ public class Sub {
         hexRay= new Hex[10][10];
         String[][] things = new String[10][10];
         for(int i =0; i<10; i++){
-                String[] temp = b1.readLine().split(" ");
+            String[] temp = b1.readLine().split(" ");
             for(int j = 0; j<10; j++){
                 things[i][j]= temp[j];
             }
@@ -140,5 +140,8 @@ public class Sub {
                 }
             }
         }
+    }
+    public Hex[][] getHexRay(){
+        return hexRay;
     }
 }
