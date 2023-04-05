@@ -17,7 +17,7 @@ public class Sub {
         toHexRay(things);
         //System.out.println("");
         ctl = hexRay[0][0];
-        System.out.println(ctl.toString());
+        //System.out.println(ctl.toString());
     }
     public void toHexRay(String[][] x){
         //   takes an input matrix and turns it into a hexagon graph
