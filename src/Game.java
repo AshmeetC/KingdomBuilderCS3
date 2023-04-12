@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Game {
+public class GameMain {
     public static void main(String[] args) throws IOException {
         ArrayList<Sub> lkk = new ArrayList<>();
         lkk.add (new Sub("board1.txt"));
