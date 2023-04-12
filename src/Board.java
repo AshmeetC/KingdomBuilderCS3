@@ -1,8 +1,9 @@
 public class Board {
-    Sub TR;
-    Sub TL;
-    Sub BR;
-    Sub BL;
+    private Sub TR;
+    private Sub TL;
+    private Sub BR;
+    private Sub BL;
+    private Hex root;
     public Board(Sub a, Sub b, Sub c, Sub d){
         TL = a;
         TR = b;
@@ -13,11 +14,7 @@ public class Board {
         vConnect(TL, BL);
         vConnect(TR, BR);
         //System.out.println(TR.getHexRay()[0][0].toString());
-    }
-    public Board(Sub a, Sub b){
-        TL = a;
-        TR = b;
-        hConnect(TL, TR);
+        root = TL.getHexRay()[0][0];
     }
     public void hConnect(Sub left, Sub right){
         Hex[][] lr = left.getHexRay();
@@ -70,4 +67,8 @@ public class Board {
     public void toString(String x){
         System.out.println(TL.getHexRay()[0][0].toString());
     }
+    public Hex getRoot(){
+        return root;
+    }
+
 }

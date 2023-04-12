@@ -1,10 +1,12 @@
 import java.io.*;
 import java.util.*;
 public class Sub {
-    Hex ctl;
-    Hex[][] hexRay;
-    BufferedReader b1;
+    private Hex ctl;
+    private Hex[][] hexRay;
+    private BufferedReader b1;
+    private String name;
     public Sub(String usethisone) throws IOException {
+        name = usethisone;
         b1 = new BufferedReader(new FileReader(usethisone));
         hexRay= new Hex[10][10];
         String[][] things = new String[10][10];
@@ -143,5 +145,8 @@ public class Sub {
     }
     public Hex[][] getHexRay(){
         return hexRay;
+    }
+    public String getName(){
+        return name;
     }
 }
