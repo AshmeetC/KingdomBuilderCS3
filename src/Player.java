@@ -29,8 +29,6 @@ public class Player {
     public void useSettlements() {
         settlements-=3;
     }
-    public void score(){
 
-    }
 }
 
