@@ -12,54 +12,76 @@ import javafx.scene.text.Font;
 public class GUI {
 	private GameButton confirmButton;
 	private GameButton cancelButton;
+	private GameButton nextTurnButton;
 	private HBox moveSelectionBox;
 	private Label playerLabel;
+	private Button terrainButton;
 	private static GUI gui;
 
 	public GUI() {
 		Board board = Board.get();
-		confirmButton = new GameButton("Confirm");
-		confirmButton.setBounds(80, 800, 200, 100);
+		confirmButton = new GameButton("[Confirm]");
+		confirmButton.setBounds(80, 650, 200, 100);
 
 		confirmButton.setOnAction(e -> {
-			if(board.getSettlementsPlacedSinceReset() == 3) {
-				TurnHandler turnHandler = TurnHandler.get();
-				Player player = turnHandler.getCurrentPlayer();
-
-				turnHandler.nextTurn(board);
+			if(board.getSettlementsPlacedSinceReset() == board.getSettlementLimit()) {
 				board.resetSettlementsPlaced();
-				setConfirmButtonsVisible(false);
+
+				setConfirmButtonDisable(true);
+				setCancelButtonDisable(true);
+				setNextButtonDisable(false);
 
 				TerrainCard card = board.getActiveCard();
 				if(card.isActive()) {
 					card.deactivateCard();
+					terrainButton = (Button)moveSelectionBox.getChildren().get(0);
+					terrainButton.setDisable(true);
 				}
 			}
+			board.confirmPlacement();
+			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(true);
+			TurnHandler.get().getCurrentPlayer().setScore(TurnHandler.get().getCurrentPlayer().getTempScore());
+			TurnHandler.get().getCurrentPlayer().updateScore();
 		});
-		cancelButton = new GameButton("Cancel");
-		cancelButton.setBounds(80, 950, 200, 100);
+		cancelButton = new GameButton("[Cancel]");
+		cancelButton.setBounds(80, 800, 200, 100);
 
 		cancelButton.setOnAction(e -> {
 			GameObject settlementObj = board.getSettlementObj();
-			TurnHandler turnHandler = TurnHandler.get();
-			Player player = turnHandler.getCurrentPlayer();
-
 			if(settlementObj != null) {
 				settlementObj.removePreviousImages(board.getSettlementsPlacedSinceReset());
 				board.resetSettlementsPlaced();
 			}
-			setConfirmButtonsVisible(false);
-
+			setConfirmButtonDisable(true);
+			setCancelButtonDisable(true);
+			board.cancelPlacement();
 			TerrainCard card = board.getActiveCard();
 			if(card.isActive()) {
 				card.deactivateCard();
 			}
+			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
+			TurnHandler.get().getCurrentPlayer().setTempScore(0);
+			TurnHandler.get().getCurrentPlayer().updateScore();
 		});
+
+		nextTurnButton = new GameButton("[Next turn]");
+		nextTurnButton.setBounds(80, 950, 200, 100);
+
+		nextTurnButton.setOnAction(e -> {
+			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
+			TurnHandler turnHandler = TurnHandler.get();
+			turnHandler.getCurrentPlayer().hideScore();
+			turnHandler.nextTurn();
+			setNextButtonDisable(true);
+			turnHandler.getCurrentPlayer().displayScore();
+		});
+		setNextButtonDisable(true);
+
 		moveSelectionBox = new HBox();
 		ScrollPane moveSelectionScrollPane = new ScrollPane(moveSelectionBox);
 
 		moveSelectionScrollPane.setLayoutX(50);
-		moveSelectionScrollPane.setLayoutY(400);
+		moveSelectionScrollPane.setLayoutY(300);
 		moveSelectionScrollPane.setPrefSize(240, 62);
 
 		ObjectHandler objectHandler = ObjectHandler.get();
@@ -76,33 +98,36 @@ public class GUI {
 		objectHandler.add(playerLabel);
 
 		Player player = turnHandler.getCurrentPlayer();
-		Button addSettlements = new Button();
-		addSettlements.setPrefSize(60, 60);
+		terrainButton = new Button();
 
-		ImageView settlementImg = new ImageView(player.getSettlementImg());
-		settlementImg.setFitWidth(60);
-		settlementImg.setFitHeight(40);
-		addSettlements.setGraphic(settlementImg);
+		ImageView settlementImg = new ImageView(player.getSettlementIcon());
+		settlementImg.setFitHeight(52);
+		settlementImg.setPreserveRatio(true);
 
-		addSettlements.setOnAction(e -> {
-			gui.setConfirmButtonsVisible(true);
+		terrainButton.setPrefSize(settlementImg.getFitWidth(), settlementImg.getFitHeight());
+		terrainButton.setGraphic(settlementImg);
+
+		terrainButton.setOnAction(e -> {
+			setCancelButtonDisable(false);
 
 			TerrainCard card = board.getActiveCard();
 			if(!card.isActive()) {
 				card.activateCard();
 			}
 		});
-		moveSelectionBox.getChildren().add(addSettlements);
-		setConfirmButtonsVisible(false);
+		moveSelectionBox.getChildren().add(terrainButton);
+		setConfirmButtonDisable(true);
+		setCancelButtonDisable(true);
+
+		Scoring.scoreCards();
 	}
 
 	public HBox getMoveSelectionBox() {return moveSelectionBox;}
 
 	public void setPlayerLabelText(String text) {playerLabel.setText(text);}
-	public void setConfirmButtonsVisible(boolean visible) {
-		confirmButton.setVisible(visible);
-		cancelButton.setVisible(visible);
-	}
+	public void setConfirmButtonDisable(boolean disabled) {confirmButton.setDisable(disabled);}
+	public void setCancelButtonDisable(boolean disabled) {cancelButton.setDisable(disabled);}
+	public void setNextButtonDisable(boolean disabled) {nextTurnButton.setDisable(disabled);}
 
 	public static GUI get() {
 		if(GUI.gui == null) {
@@ -111,7 +136,6 @@ public class GUI {
 		return GUI.gui;
 	}
 }
-
 
 
 

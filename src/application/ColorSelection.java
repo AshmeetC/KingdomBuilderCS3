@@ -3,8 +3,7 @@ package application;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 
@@ -23,11 +22,7 @@ public class ColorSelection {
 		for(int i = 0; i < 4; i++) {
 			playerColors[i] = "";
 		}
-		Window window = Window.get();
-		double xMultiplier = window.getWidth() / 1920.0;
-		double yMultiplier = window.getHeight() / 1080.0;
-		Image background = new Image(getClass().getResourceAsStream("/images/colorSelectBackground.jpeg"));
-		GameObject backgroundObj = new GameObject(background, 0, 0, 1920 * xMultiplier, 1080 * yMultiplier, 0);
+
 		mainButtons = new GameButton[4];
 		nextButton = new GameButton("[Use random colors]");
 
@@ -131,7 +126,6 @@ public class ColorSelection {
 		selectionObjects.clear();
 	}
 }
-
 
 
 
