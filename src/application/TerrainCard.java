@@ -228,7 +228,7 @@ public class TerrainCard {
                 ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
 
                 if(node == null) {}
-                else if((i==19 || i==0 || j==0 || j==19) && (board.getSettlementsPlacedSinceReset() < board.getSettlementLimit() ||
+                else if((i==19 || i==0 || j==0 || j==19) && !(node.getTerrain().equals("w") || node.getTerrain().equals("m")) && (board.getSettlementsPlacedSinceReset() < board.getSettlementLimit() ||
                         node.hasSettlement()) &&
                         /*node.getTerrainType().equals(t) &&*/
                         !(node.hasSettlement() &&
@@ -256,7 +256,7 @@ public class TerrainCard {
                     ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
 
                     if(node == null) {}
-                    else if(/*node.getTerrainType().equals(t) &&*/(i==19 || i==0 || j==0 || j==19) &&
+                    else if(/*node.getTerrainType().equals(t) &&*/!(node.getTerrain().equals("w") || node.getTerrain().equals("m")) &&(i==19 || i==0 || j==0 || j==19) &&
                             !(node.hasSettlement() &&
                                     node.getPlayerNum() != turnHandler.getCurrentPlayer().getPlayerNum()) &&
                             !(node.hasSettlement() &&
@@ -275,8 +275,19 @@ public class TerrainCard {
     public boolean isTempActive(){
         return isTempActive;
     }
-    public void tempDeactivate(){
-        isTempActive=false;
+    public void tempDeactivateCard() {
+        Board board = Board.get();
+        HexButton[][] buttonMatrix = board.getButtonMatrix();
+
+        for(HexButton[] row : buttonMatrix) {
+            for(HexButton button : row) {
+                //button.setDisable(true);
+                if(button != null) {
+                    button.setVisible(false);
+                }
+            }
+        }
+        isTempActive = false;
     }
     public void reactivate(){
         deactivateCard();

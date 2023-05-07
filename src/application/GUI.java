@@ -113,7 +113,8 @@ public class GUI {
 			setCancelButtonDisable(false);
 
 			TerrainCard card = board.getActiveCard();
-			card.tempDeactivate();
+			card.reset();
+			card.tempDeactivateCard();
 			if(!card.isActive()) {
 				card.activateCard();
 			}
