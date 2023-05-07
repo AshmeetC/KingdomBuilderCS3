@@ -162,7 +162,6 @@ public class Board {
 		//button.setOpacity(0);
 
 		button.setOnMouseClicked(e -> {
-			System.out.println(settlementLimit);
 			GUI gui = GUI.get();
 			HexNode hexNode = button.getHexNode();
 			if(settlementObj == null) {
@@ -173,7 +172,7 @@ public class Board {
 				settlementObj.setEffect(shadow);
 			}
 			current.add(hexNode);
-			if(!hexNode.hasSettlement()) {
+			if(!hexNode.hasSettlement() && settlementLimit>settlementsPlacedSinceReset) {
 				TurnHandler turnHandler = TurnHandler.get();
 				Player player = turnHandler.getCurrentPlayer();
 				Image settlement = player.getSettlementImg();
@@ -186,8 +185,12 @@ public class Board {
 				settlementQueue.add(hexNode);
 
 				if(activeCard.isActive()) {
-					activeCard.deactivateCard();
-					activeCard.activateCard();
+					if (activeCard.isTempActive())
+						activeCard.reactivate();
+					else{
+						activeCard.deactivateCard();
+						activeCard.activateCard();
+					}
 				}
 
 				if(settlementsPlacedSinceReset == settlementLimit) {
@@ -199,6 +202,8 @@ public class Board {
 				//System.out.println(entry.size());
 				playerMaps.get(player.getPlayerNum()).put(hexNode.getSector(), entry);
 				Scoring.scoreCards();
+				System.out.println("sr " + settlementsPlacedSinceReset );
+				System.out.println("sl " + settlementLimit);
 			} else {
 				settlementObj.removePreviousImages(1);
 				hexNode.removeSettlement();
@@ -206,8 +211,12 @@ public class Board {
 				settlementQueue.remove(hexNode);
 				//
 				if(activeCard.isActive()) {
-					activeCard.deactivateCard();
-					activeCard.activateCard();
+					if (activeCard.isTempActive())
+						activeCard.reactivate();
+					else{
+						activeCard.deactivateCard();
+						activeCard.activateCard();
+					}
 				}
 
 				if(settlementsPlacedSinceReset == 2) {
@@ -225,7 +234,6 @@ public class Board {
 		});
 		//button.setDisable(true);
 		button.setVisible(false);
-
 		return button;
 	}
 
@@ -279,6 +287,7 @@ public class Board {
 			for (int i = 0; i < current.size(); i++) {
 				current.get(i).removeSettlement();
 				entry.remove(current.get(i));
+				current.get(i).removeAdjacent();
 			}
 			playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).put(j, entry);
 		}

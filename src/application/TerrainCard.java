@@ -8,10 +8,13 @@ public class TerrainCard {
     private Image cardImage;
     private String terrainToken;
     private boolean isActive;
+    private boolean isTempActive;
+    private String tempString;
 
     public TerrainCard(int type) {
         isActive = false;
         terrainToken = createToken(type);
+        tempString = "";
     }
 
     private String createToken(int type) {
@@ -145,6 +148,8 @@ public class TerrainCard {
         return false;
     }
     public void tempActivateCard(String t) {
+        tempString = t;
+        isTempActive=true;
         Board board = Board.get();
         HexButton[][] buttonMatrix = board.getButtonMatrix();
         HashSet<HexButton> buttonSet = new HashSet<>();
@@ -207,6 +212,84 @@ public class TerrainCard {
             buttonSet.clear();
         }
         isActive = true;
+    }
+    public void towerActivateCard() {
+        isTempActive=true;
+        deactivateCard();
+        Board board = Board.get();
+        HexButton[][] buttonMatrix = board.getButtonMatrix();
+        HashSet<HexButton> buttonSet = new HashSet<>();
+
+        for(int i =0; i<20; i++) {
+            for(int j =0; j<20; j++) {
+                HexButton button = buttonMatrix[i][j];
+                HexNode node = button != null? button.getHexNode() : null;
+                TurnHandler turnHandler = TurnHandler.get();
+                ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
+
+                if(node == null) {}
+                else if((i==19 || i==0 || j==0 || j==19) && (board.getSettlementsPlacedSinceReset() < board.getSettlementLimit() ||
+                        node.hasSettlement()) &&
+                        /*node.getTerrainType().equals(t) &&*/
+                        !(node.hasSettlement() &&
+                                (!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true)) &&
+                        hasBorderingSettlement(button) ||
+                        (node.hasSettlement() &&
+                                node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() &&
+                                (!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))) {
+                    //button.setDisable(false);
+                    button.setVisible(true);
+                    buttonSet.add(button);
+                }
+            }
+        }
+
+        if(buttonSet.isEmpty() ||
+                (buttonSet.size() == 1 &&
+                        buttonSet.stream().findFirst().get().getHexNode().hasSettlement() &&
+                        board.getSettlementsPlacedSinceReset() < board.getSettlementLimit())) {
+            for(int i =0; i<20; i++) {
+                for(int j =0; j<20; j++) {
+                    HexButton button = buttonMatrix[i][j];
+                    HexNode node = button != null? button.getHexNode() : null;
+                    TurnHandler turnHandler = TurnHandler.get();
+                    ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
+
+                    if(node == null) {}
+                    else if(/*node.getTerrainType().equals(t) &&*/(i==19 || i==0 || j==0 || j==19) &&
+                            !(node.hasSettlement() &&
+                                    node.getPlayerNum() != turnHandler.getCurrentPlayer().getPlayerNum()) &&
+                            !(node.hasSettlement() &&
+                                    node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() &&
+                                    (!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true))) {
+                        //button.setDisable(false);
+                        button.setVisible(true);
+                    }
+                }
+            }
+        } else {
+            buttonSet.clear();
+        }
+        isActive = true;
+    }
+    public boolean isTempActive(){
+        return isTempActive;
+    }
+    public void tempDeactivate(){
+        isTempActive=false;
+    }
+    public void reactivate(){
+        deactivateCard();
+        if (isTempActive && !tempString.equals("")){
+            tempActivateCard(tempString);
+        }
+        if (isTempActive && tempString.equals("")){
+            towerActivateCard();
+        }
+    }
+    public void reset(){
+        tempString = "";
+        deactivateCard();
     }
 }
 

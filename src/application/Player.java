@@ -146,9 +146,11 @@ public class Player {
             addActionTiles.setGraphic(tileImg);
 
             addActionTiles.setOnAction(e -> {
-                gui.setCancelButtonDisable(false);
-                usedActionTile = true;
-                tileObj.setActive(true);
+                if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0){
+                    gui.setCancelButtonDisable(false);
+                    usedActionTile = true;
+                    tileObj.setActive(true);
+                }
             });
             moveSelectionList.add(addActionTiles);
         }

@@ -62,6 +62,7 @@ public class GUI {
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
 			TurnHandler.get().getCurrentPlayer().setTempScore(0);
 			TurnHandler.get().getCurrentPlayer().updateScore();
+			//Board.get().getActiveCard().reset();
 		});
 
 		nextTurnButton = new GameButton("[Next turn]");
@@ -74,6 +75,7 @@ public class GUI {
 			turnHandler.nextTurn();
 			setNextButtonDisable(true);
 			turnHandler.getCurrentPlayer().displayScore();
+			//Board.get().getActiveCard().reset();
 		});
 		setNextButtonDisable(true);
 
@@ -111,6 +113,7 @@ public class GUI {
 			setCancelButtonDisable(false);
 
 			TerrainCard card = board.getActiveCard();
+			card.tempDeactivate();
 			if(!card.isActive()) {
 				card.activateCard();
 			}

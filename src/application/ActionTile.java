@@ -311,7 +311,8 @@ public class ActionTile {
         }
 
         private void activate() {
-
+            Board.get().allowAdditionalSettlement();
+            Board.get().getActiveCard().towerActivateCard();
         }
 
         private void deactivate() {
