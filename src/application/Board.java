@@ -3,6 +3,8 @@ package application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+
+import javafx.animation.Animation;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -23,6 +25,7 @@ public class Board {
 	private int settlementLimit;
 	private ArrayList<HexNode> current;
 	private ArrayList<TreeMap<Integer, ArrayList<HexNode>>> playerMaps;
+	private AnimationClass animation;
 
 
 	public Board(){
@@ -54,6 +57,7 @@ public class Board {
 			}
 		}
 		settlementLimit=3;
+		animation = new AnimationClass();
 	}
 
 	private void setBoardNums() {
@@ -70,7 +74,7 @@ public class Board {
 		}
 	}
 
-	private void displayBoard(double x, double y, double width, double height) {
+	private void displayBoard(double x, double y, double width, double height){
 		//354, 14, 1212, 1041
 		//620 x 528
 		Image backImg = new Image(getClass().getResourceAsStream("/images/BlackSquare.png"));
@@ -152,7 +156,7 @@ public class Board {
 		}
 	}
 
-	private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c, double xOffset, double yOffset, double width, double height) {
+	private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c, double xOffset, double yOffset, double width, double height){
 		HexButton button = new HexButton(33, hexMatrix[r][c]);
 
 		double hexWidth = (width - 31 * (width / 1152)) / 19;
@@ -173,13 +177,8 @@ public class Board {
 			}
 			current.add(hexNode);
 			if(!hexNode.hasSettlement() && settlementLimit>settlementsPlacedSinceReset) {
-				TurnHandler turnHandler = TurnHandler.get();
-				Player player = turnHandler.getCurrentPlayer();
-				Image settlement = player.getSettlementImg();
-
-				settlementObj.add(settlement, button.getLayoutX() - 28 + Math.random() * 16, button.getLayoutY() - 28 + Math.random() * 16,
-						settlement.getWidth() * (42 / settlement.getHeight()), 42);
-
+				//settlementObj.getTemp().setVisible(false);
+				//settlementObj.setEffect();
 				hexNode.addSettlement();
 				settlementsPlacedSinceReset++;
 				settlementQueue.add(hexNode);
@@ -196,6 +195,15 @@ public class Board {
 				if(settlementsPlacedSinceReset == settlementLimit) {
 					gui.setConfirmButtonDisable(false);
 				}
+				TurnHandler turnHandler = TurnHandler.get();
+				Player player = turnHandler.getCurrentPlayer();
+				Image settlement = player.getSettlementImg();
+				double x1 = button.getLayoutX() - 28 + Math.random() * 16;
+				double y1 = button.getLayoutY() - 28 + Math.random() * 16;
+				double width1 = settlement.getWidth() * (42 / settlement.getHeight());
+				GameObject temp = new GameObject(settlement, x1, y1, width1, 42, 3);
+				temp.setEffect(new DropShadow(30, Color.BLACK));
+				AnimationClass.SettlementFadeScale(.8, temp, settlement, x1, y1, width1);
 				hexNode.checkAdjacent();
 				ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(player.getPlayerNum()).get(hexNode.getSector());
 				entry.add(hexNode);
@@ -204,7 +212,7 @@ public class Board {
 				Scoring.scoreCards();
 				System.out.println("sr " + settlementsPlacedSinceReset );
 				System.out.println("sl " + settlementLimit);
-			} else {
+			} else if(!AnimationClass.getActive()){
 				settlementObj.removePreviousImages(1);
 				hexNode.removeSettlement();
 				settlementsPlacedSinceReset--;

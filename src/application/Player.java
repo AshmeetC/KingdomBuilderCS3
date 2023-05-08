@@ -11,8 +11,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class Player {
@@ -26,6 +28,8 @@ public class Player {
     private int tempScore;
     private boolean turnConfirmed;
     private boolean usedActionTile;
+    private Image firstPlayerToken;
+    private static GameObject firstPlayerObj;
 
     public Player(int num, String color) {
         score = 0;
@@ -41,6 +45,12 @@ public class Player {
         displayScore();
         tempScore =0;
         turnConfirmed = false;
+        firstPlayerToken = new Image(getClass().getResourceAsStream("/images/NullImage.png"));
+
+        if(firstPlayerObj == null) {
+            firstPlayerObj = new GameObject(firstPlayerToken, 145, 10, 50, 57.67, 2);
+            firstPlayerObj.setEffect(new DropShadow(10, Color.BLACK));
+        }
     }
 
     public Image getSettlementIcon() {return settlementIcon;}
@@ -57,7 +67,6 @@ public class Player {
     public void setTempScore(int score) {this.tempScore = score;}
 
     public void displayScore() {
-        TurnHandler turnHandler = TurnHandler.get();
         ObjectHandler objectHandler = ObjectHandler.get();
 
         scoreLabel = new Label("Score: ");
@@ -70,6 +79,15 @@ public class Player {
         objectHandler.add(scoreLabel);
     }
 
+    private void displayFirstPlayerToken() {
+        firstPlayerObj.setImage(firstPlayerToken);
+    }
+
+    public void setFirstPlayer() {
+        firstPlayerToken = new Image(getClass().getResourceAsStream("/images/KB-FirstPlayerToken.png"));
+        displayFirstPlayerToken();
+    }
+
     public void updateScore() {
         if (!turnConfirmed)
             scoreLabel.setText("Score: " + tempScore);
@@ -79,6 +97,7 @@ public class Player {
 
     public void startTurn() {
         updateGUIButtons();
+        displayFirstPlayerToken();
     }
 
     public void addActionTile(ActionTile actionTile) {

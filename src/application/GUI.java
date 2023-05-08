@@ -5,8 +5,16 @@ import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class GUI {
@@ -19,9 +27,24 @@ public class GUI {
 	private static GUI gui;
 
 	public GUI() {
+		Image backgroundImage = new Image(getClass().getResourceAsStream("/images/KB-Background.png"));
+		GameObject background = new GameObject(backgroundImage, 0, 0, 1920, 1080, 0);
+		ColorAdjust colorAdjust = new ColorAdjust();
+
+		colorAdjust.setContrast(0);
+		colorAdjust.setHue(0);
+		colorAdjust.setBrightness(-.4);
+		colorAdjust.setSaturation(0);
+		background.setEffect(colorAdjust);
+
 		Board board = Board.get();
-		confirmButton = new GameButton("[Confirm]");
-		confirmButton.setBounds(80, 650, 200, 100);
+		confirmButton = new GameButton("Confirm");
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 32);
+		confirmButton.setFont(font);
+		confirmButton.setTextFill(Color.WHITE);
+		confirmButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
+		confirmButton.setBackground(null);
+		confirmButton.setBounds(80, 650, 200, 75);
 
 		confirmButton.setOnAction(e -> {
 			if(board.getSettlementsPlacedSinceReset() == board.getSettlementLimit()) {
@@ -43,8 +66,12 @@ public class GUI {
 			TurnHandler.get().getCurrentPlayer().setScore(TurnHandler.get().getCurrentPlayer().getTempScore());
 			TurnHandler.get().getCurrentPlayer().updateScore();
 		});
-		cancelButton = new GameButton("[Cancel]");
-		cancelButton.setBounds(80, 800, 200, 100);
+		cancelButton = new GameButton("Cancel");
+		cancelButton.setFont(font);
+		cancelButton.setTextFill(Color.WHITE);
+		cancelButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
+		cancelButton.setBackground(null);
+		cancelButton.setBounds(80, 800, 200, 75);
 
 		cancelButton.setOnAction(e -> {
 			GameObject settlementObj = board.getSettlementObj();
@@ -66,7 +93,11 @@ public class GUI {
 		});
 
 		nextTurnButton = new GameButton("[Next turn]");
-		nextTurnButton.setBounds(80, 950, 200, 100);
+		nextTurnButton.setFont(font);
+		nextTurnButton.setTextFill(Color.WHITE);
+		nextTurnButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
+		nextTurnButton.setBackground(null);
+		nextTurnButton.setBounds(80, 950, 200, 75);
 
 		nextTurnButton.setOnAction(e -> {
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);

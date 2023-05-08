@@ -12,12 +12,10 @@ import javafx.util.Duration;
 public class TurnHandler {
 	private ArrayList<Player> playerList;
 	private ListIterator<Player> playerIter;
-	private int playerAmt;
 	private static TurnHandler turnHandler;
 
 	public TurnHandler() {
 		playerList = new ArrayList<>();
-		playerAmt = 4;
 	}
 
 	public void nextTurn() {
@@ -44,12 +42,13 @@ public class TurnHandler {
 	}
 
 	public void setPlayers(String[] colors) {
-		for(int i = 0; i < playerAmt; i++) {
+		for(int i = 0; i < colors.length; i++) {
 			Player player = new Player(i, colors[i]);
 			playerList.add(player);
 		}
-		//Collections.shuffle(playerList);
+		Collections.shuffle(playerList);
 		playerIter = playerList.listIterator();
+		playerList.get(0).setFirstPlayer();
 	}
 
 	public static TurnHandler get() {
